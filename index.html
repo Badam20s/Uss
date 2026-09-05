@@ -2,8 +2,18 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Gunnu & Badam's Aero Quest 🫧</title>
+
+  <!-- Link Preview / Cover Image Meta Tags -->
+  <meta property="og:title" content="Gunnu & Badam's Aero Quest 🫧" />
+  <meta property="og:description" content="Level 4 Unlocked: 4 Months of Gunnu & Badam 🎮💖" />
+  <meta property="og:image" content="photo8.jpg" />
+  <meta property="og:image:type" content="image/jpeg" />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="photo8.jpg" />
+
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -20,6 +30,7 @@
       min-height: 100vh;
       overflow: hidden;
       user-select: none;
+      -webkit-user-select: none;
       position: relative;
     }
 
@@ -47,9 +58,9 @@
       font-size: 13px;
       font-weight: 700;
       color: #0369a1;
-      background: rgba(255, 255, 255, 0.7);
+      background: rgba(255, 255, 255, 0.75);
       backdrop-filter: blur(8px);
-      padding: 6px 16px;
+      padding: 6px 18px;
       border-radius: 20px;
       margin-bottom: 12px;
       border: 1px solid rgba(255, 255, 255, 0.9);
@@ -60,10 +71,10 @@
     #game-container {
       position: relative;
       border-radius: 24px;
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.65), rgba(255, 255, 255, 0.3));
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.35));
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
-      border: 2px solid rgba(255, 255, 255, 0.85);
+      border: 2px solid rgba(255, 255, 255, 0.9);
       box-shadow: 
         0 20px 40px rgba(14, 165, 233, 0.25),
         inset 0 2px 4px rgba(255, 255, 255, 0.9);
@@ -84,25 +95,25 @@
       left: 50%;
       transform: translate(-50%, -50%);
       width: 86%;
-      background: linear-gradient(145deg, rgba(255, 255, 255, 0.92), rgba(240, 249, 255, 0.85));
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.95), rgba(240, 249, 255, 0.9));
       backdrop-filter: blur(20px);
       border: 2px solid #ffffff;
-      border-radius: 18px;
+      border-radius: 20px;
       padding: 18px;
       text-align: center;
-      box-shadow: 0 16px 36px rgba(14, 165, 233, 0.3);
+      box-shadow: 0 16px 36px rgba(14, 165, 233, 0.35);
       z-index: 10;
     }
     #dialog h3 { color: #0284c7; font-size: 16px; margin-bottom: 8px; font-weight: 800; }
-    #dialog p { font-size: 13px; line-height: 1.45; color: #1e293b; margin-bottom: 14px; font-weight: 500; }
+    #dialog p { font-size: 13px; line-height: 1.45; color: #1e293b; margin-bottom: 14px; font-weight: 600; }
 
     .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
     .btn {
       background: linear-gradient(180deg, #ffffff 0%, #e0f2fe 50%, #bae6fd 100%);
       color: #0369a1;
-      border: 1px solid rgba(255, 255, 255, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.95);
       padding: 10px 8px;
-      border-radius: 10px;
+      border-radius: 12px;
       cursor: pointer;
       font-size: 12px;
       font-weight: 700;
@@ -113,7 +124,7 @@
       transform: translateY(1px);
       background: #bae6fd;
     }
-    #feedback { font-size: 12px; margin-top: 8px; min-height: 16px; color: #e11d48; font-weight: 600; }
+    #feedback { font-size: 12px; margin-top: 8px; min-height: 16px; color: #e11d48; font-weight: 700; }
 
     /* Victory Card */
     #victory-card {
@@ -125,13 +136,13 @@
       width: 90%;
       max-height: 88%;
       overflow-y: auto;
-      background: linear-gradient(160deg, rgba(255, 255, 255, 0.96), rgba(240, 253, 250, 0.92));
+      background: linear-gradient(160deg, rgba(255, 255, 255, 0.98), rgba(240, 253, 250, 0.95));
       backdrop-filter: blur(24px);
       border: 2px solid #ffffff;
       border-radius: 20px;
       padding: 22px 18px;
       text-align: center;
-      box-shadow: 0 25px 50px rgba(13, 148, 136, 0.25);
+      box-shadow: 0 25px 50px rgba(13, 148, 136, 0.3);
       z-index: 20;
     }
     #victory-card h2 { color: #0284c7; margin-bottom: 6px; font-size: 19px; font-weight: 800; }
@@ -143,7 +154,7 @@
       margin-bottom: 14px;
       white-space: pre-line;
       text-align: left;
-      background: rgba(255, 255, 255, 0.85);
+      background: rgba(255, 255, 255, 0.9);
       padding: 14px;
       border-radius: 12px;
       border: 1px solid rgba(14, 165, 233, 0.15);
@@ -159,7 +170,7 @@
     .d-btn {
       width: 48px;
       height: 48px;
-      background: linear-gradient(180deg, rgba(255, 255, 255, 0.85), rgba(224, 242, 254, 0.7));
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(224, 242, 254, 0.75));
       backdrop-filter: blur(8px);
       border: 1px solid rgba(255, 255, 255, 0.9);
       border-radius: 14px;
@@ -176,7 +187,7 @@
 </head>
 <body>
 
-  <!-- Background decorative bubbles -->
+  <!-- Ambient background bubbles -->
   <div class="bubble" style="left: 10%; width: 45px; height: 45px; animation-duration: 9s; animation-delay: 0s;"></div>
   <div class="bubble" style="left: 30%; width: 25px; height: 25px; animation-duration: 7s; animation-delay: 2s;"></div>
   <div class="bubble" style="left: 70%; width: 55px; height: 55px; animation-duration: 10s; animation-delay: 1s;"></div>
@@ -195,16 +206,16 @@
       <div id="feedback"></div>
     </div>
 
-    <!-- Final Letter / Victory Screen -->
+    <!-- Final Victory Screen -->
     <div id="victory-card">
       <h2>✨ Level 4 Complete ✨</h2>
       <div class="subhead">Happy 4-Month Anniversary, Gunnu!</div>
       <div class="letter-body">
-        Look at that—you cleared all 4 capsules of our memories! 🌸
-        
-        From the games and handmade bouquets to pink glowsticks, Elara, and our weird brain-sync telepathy... every second with you has been my favorite part of life.
+Look at that—you cleared all 4 capsules of our memories! 🌸
 
-        "shagun i’m always gonna be yours…hamare bich koi nhi ayega…it was always us and always gonna be…i love you so much my princess…i just love you….thank you for being here for me…for taking care of me…thank you and i love you…"
+From the games and handmade bouquets to pink glowsticks, Elara, and our weird brain-sync telepathy... every second with you has been my favorite part of life.
+
+"shagun i’m always gonna be yours…hamare bich koi nhi ayega…it was always us and always gonna be…i love you so much my princess…i just love you….thank you for being here for me…for taking care of me…thank you and i love you…"
       </div>
       <p style="font-size: 13px; font-weight: 700; color: #0284c7;">Forever your Badam 🤍</p>
     </div>
@@ -224,7 +235,6 @@
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
 
-    // Customized with your memories
     const quests = [
       {
         month: "Month 1 : The Classic Amnesia",
@@ -270,7 +280,7 @@
     function draw() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // Subtle Frutiger Aero water drops/bubbles on canvas
+      // Subtle water drops/bubbles on canvas
       ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
       ctx.beginPath();
       ctx.arc(60, 100, 18, 0, Math.PI * 2);
@@ -290,13 +300,13 @@
         }
       });
 
-      // Draw Player Sprite (Gunnu's avatar)
+      // Draw Player
       ctx.font = '26px -apple-system, sans-serif';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.fillText('🪽', player.x, player.y);
 
-      // Status Pill
+      // Status Counter
       ctx.fillStyle = '#0284c7';
       ctx.font = 'bold 12px -apple-system, sans-serif';
       ctx.textAlign = 'left';
