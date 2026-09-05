@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gunnu & Badam's Aero Quest 🫧</title>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* Frutiger Aero Glossy Sky Background */
+    body {
+      background: linear-gradient(180deg, #38bdf8 0%, #7dd3fc 45%, #bbf7d0 85%, #86efac 100%);
+      color: #0f172a;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      overflow: hidden;
+      user-select: none;
+      position: relative;
+    }
+
+    /* Ambient Aero Floating Bubbles */
+    .bubble {
+      position: absolute;
+      bottom: -60px;
+      background: radial-gradient(circle at 35% 35%, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.1) 60%, rgba(255, 255, 255, 0.4) 100%);
+      border-radius: 50%;
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      box-shadow: 0 4px 15px rgba(255, 255, 255, 0.4), inset 0 0 10px rgba(255, 255, 255, 0.6);
+      pointer-events: none;
+      animation: floatUp 8s linear infinite;
+    }
+
+    @keyframes floatUp {
+      0% { transform: translateY(0) scale(0.8); opacity: 0; }
+      15% { opacity: 0.7; }
+      90% { opacity: 0.7; }
+      100% { transform: translateY(-110vh) scale(1.1); opacity: 0; }
+    }
+
+    /* Top Subtitle Bar */
+    .title-tag {
+      font-size: 13px;
+      font-weight: 700;
+      color: #0369a1;
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(8px);
+      padding: 6px 16px;
+      border-radius: 20px;
+      margin-bottom: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.9);
+      box-shadow: 0 4px 12px rgba(14, 165, 233, 0.15);
+    }
+
+    /* Aero Glossy Glass Canvas Container */
+    #game-container {
+      position: relative;
+      border-radius: 24px;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.65), rgba(255, 255, 255, 0.3));
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 2px solid rgba(255, 255, 255, 0.85);
+      box-shadow: 
+        0 20px 40px rgba(14, 165, 233, 0.25),
+        inset 0 2px 4px rgba(255, 255, 255, 0.9);
+      padding: 10px;
+    }
+
+    canvas {
+      display: block;
+      border-radius: 18px;
+      background: linear-gradient(180deg, #bae6fd 0%, #e0f2fe 60%, #dcfce7 100%);
+    }
+
+    /* Glass Modal Dialog */
+    #dialog {
+      display: none;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 86%;
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.92), rgba(240, 249, 255, 0.85));
+      backdrop-filter: blur(20px);
+      border: 2px solid #ffffff;
+      border-radius: 18px;
+      padding: 18px;
+      text-align: center;
+      box-shadow: 0 16px 36px rgba(14, 165, 233, 0.3);
+      z-index: 10;
+    }
+    #dialog h3 { color: #0284c7; font-size: 16px; margin-bottom: 8px; font-weight: 800; }
+    #dialog p { font-size: 13px; line-height: 1.45; color: #1e293b; margin-bottom: 14px; font-weight: 500; }
+
+    .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .btn {
+      background: linear-gradient(180deg, #ffffff 0%, #e0f2fe 50%, #bae6fd 100%);
+      color: #0369a1;
+      border: 1px solid rgba(255, 255, 255, 0.9);
+      padding: 10px 8px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 700;
+      box-shadow: 0 3px 8px rgba(14, 165, 233, 0.15), inset 0 1px 1px #fff;
+      transition: all 0.15s ease;
+    }
+    .btn:active {
+      transform: translateY(1px);
+      background: #bae6fd;
+    }
+    #feedback { font-size: 12px; margin-top: 8px; min-height: 16px; color: #e11d48; font-weight: 600; }
+
+    /* Victory Card */
+    #victory-card {
+      display: none;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 90%;
+      max-height: 88%;
+      overflow-y: auto;
+      background: linear-gradient(160deg, rgba(255, 255, 255, 0.96), rgba(240, 253, 250, 0.92));
+      backdrop-filter: blur(24px);
+      border: 2px solid #ffffff;
+      border-radius: 20px;
+      padding: 22px 18px;
+      text-align: center;
+      box-shadow: 0 25px 50px rgba(13, 148, 136, 0.25);
+      z-index: 20;
+    }
+    #victory-card h2 { color: #0284c7; margin-bottom: 6px; font-size: 19px; font-weight: 800; }
+    #victory-card .subhead { font-size: 12px; color: #059669; font-weight: 700; margin-bottom: 14px; text-transform: uppercase; letter-spacing: 0.5px; }
+    #victory-card .letter-body {
+      font-size: 13px;
+      line-height: 1.65;
+      color: #1e293b;
+      margin-bottom: 14px;
+      white-space: pre-line;
+      text-align: left;
+      background: rgba(255, 255, 255, 0.85);
+      padding: 14px;
+      border-radius: 12px;
+      border: 1px solid rgba(14, 165, 233, 0.15);
+    }
+
+    /* Aero Glass D-Pad for Mobile */
+    .controls {
+      display: grid;
+      grid-template-columns: repeat(3, 48px);
+      grid-gap: 8px;
+      margin-top: 14px;
+    }
+    .d-btn {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.85), rgba(224, 242, 254, 0.7));
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.9);
+      border-radius: 14px;
+      color: #0284c7;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(14, 165, 233, 0.2), inset 0 1px 1px #fff;
+    }
+    .d-btn:active { background: #bae6fd; transform: scale(0.96); }
+  </style>
+</head>
+<body>
+
+  <!-- Background decorative bubbles -->
+  <div class="bubble" style="left: 10%; width: 45px; height: 45px; animation-duration: 9s; animation-delay: 0s;"></div>
+  <div class="bubble" style="left: 30%; width: 25px; height: 25px; animation-duration: 7s; animation-delay: 2s;"></div>
+  <div class="bubble" style="left: 70%; width: 55px; height: 55px; animation-duration: 10s; animation-delay: 1s;"></div>
+  <div class="bubble" style="left: 85%; width: 35px; height: 35px; animation-duration: 8s; animation-delay: 3s;"></div>
+
+  <div class="title-tag">🫧 Gunnu & Badam : 4 Month World</div>
+
+  <div id="game-container">
+    <canvas id="gameCanvas" width="360" height="360"></canvas>
+
+    <!-- Trivia Prompt Modal -->
+    <div id="dialog">
+      <h3 id="dialog-title">Memory Capsule</h3>
+      <p id="dialog-question">Question goes here</p>
+      <div class="btn-grid" id="options-container"></div>
+      <div id="feedback"></div>
+    </div>
+
+    <!-- Final Letter / Victory Screen -->
+    <div id="victory-card">
+      <h2>✨ Level 4 Complete ✨</h2>
+      <div class="subhead">Happy 4-Month Anniversary, Gunnu!</div>
+      <div class="letter-body">
+        Look at that—you cleared all 4 capsules of our memories! 🌸
+        
+        From the games and handmade bouquets to pink glowsticks, Elara, and our weird brain-sync telepathy... every second with you has been my favorite part of life.
+
+        "shagun i’m always gonna be yours…hamare bich koi nhi ayega…it was always us and always gonna be…i love you so much my princess…i just love you….thank you for being here for me…for taking care of me…thank you and i love you…"
+      </div>
+      <p style="font-size: 13px; font-weight: 700; color: #0284c7;">Forever your Badam 🤍</p>
+    </div>
+  </div>
+
+  <!-- Mobile D-Pad -->
+  <div class="controls">
+    <div></div>
+    <button class="d-btn" onclick="move(0, -1)">▲</button>
+    <div></div>
+    <button class="d-btn" onclick="move(-1, 0)">◀</button>
+    <button class="d-btn" onclick="move(0, 1)">▼</button>
+    <button class="d-btn" onclick="move(1, 0)">▶</button>
+  </div>
+
+  <script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+
+    // Customized with your memories
+    const quests = [
+      {
+        month: "Month 1 : The Classic Amnesia",
+        question: "What iconic thing did we do on our very 1st month anniversary?",
+        options: ["Forgot the date lol", "Celebrated 3 days late", "Had a fight", "Slept all day"],
+        correct: 0,
+        unlockedIcon: "💐"
+      },
+      {
+        month: "Month 2 : Glow Mode",
+        question: "Month 2 inside joke check: What's shining bright?",
+        options: ["A fairy light", "A pink glowstick", "Badam's forehead", "A neon sign"],
+        correct: 1,
+        unlockedIcon: "🪄"
+      },
+      {
+        month: "Month 3 : Girlfriend Day",
+        question: "Who arrived on Girlfriend Day to keep Gunnu company?",
+        options: ["A teddy named Bobo", "Elara the plushie", "A jumbo chocolate", "A giant pillow"],
+        correct: 1,
+        unlockedIcon: "🧸"
+      },
+      {
+        month: "Month 4 : Present Day",
+        question: "What uncanny superpower are we sharing right now?",
+        options: ["Saying the same things", "Sleeping at 4 AM", "Eating the same food", "Reading minds"],
+        correct: 0,
+        unlockedIcon: "🫧"
+      }
+    ];
+
+    let player = { x: 40, y: 40, speed: 22 };
+    let keysCollected = 0;
+    let activeChest = null;
+
+    const capsules = [
+      { x: 290, y: 55, unlocked: false, id: 0 },
+      { x: 70, y: 290, unlocked: false, id: 1 },
+      { x: 290, y: 290, unlocked: false, id: 2 },
+      { x: 180, y: 175, unlocked: false, id: 3 }
+    ];
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Subtle Frutiger Aero water drops/bubbles on canvas
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+      ctx.beginPath();
+      ctx.arc(60, 100, 18, 0, Math.PI * 2);
+      ctx.arc(310, 200, 12, 0, Math.PI * 2);
+      ctx.arc(140, 280, 22, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Draw Capsules
+      capsules.forEach((c) => {
+        ctx.font = '24px -apple-system, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        if (c.unlocked) {
+          ctx.fillText(quests[c.id].unlockedIcon, c.x, c.y);
+        } else {
+          ctx.fillText('🫧', c.x, c.y);
+        }
+      });
+
+      // Draw Player Sprite (Gunnu's avatar)
+      ctx.font = '26px -apple-system, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('🪽', player.x, player.y);
+
+      // Status Pill
+      ctx.fillStyle = '#0284c7';
+      ctx.font = 'bold 12px -apple-system, sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText(`Unlocked: ${keysCollected}/4 Capsules`, 16, 26);
+    }
+
+    function move(dx, dy) {
+      if (document.getElementById('dialog').style.display === 'block' || keysCollected === 4) return;
+
+      player.x = Math.max(25, Math.min(canvas.width - 25, player.x + dx * player.speed));
+      player.y = Math.max(35, Math.min(canvas.height - 25, player.y + dy * player.speed));
+      
+      checkCollision();
+      draw();
+    }
+
+    // Arrow keys & WASD
+    window.addEventListener('keydown', (e) => {
+      if (['ArrowUp', 'w', 'W'].includes(e.key)) move(0, -1);
+      if (['ArrowDown', 's', 'S'].includes(e.key)) move(0, 1);
+      if (['ArrowLeft', 'a', 'A'].includes(e.key)) move(-1, 0);
+      if (['ArrowRight', 'd', 'D'].includes(e.key)) move(1, 0);
+    });
+
+    function checkCollision() {
+      capsules.forEach(c => {
+        if (!c.unlocked) {
+          const dist = Math.hypot(player.x - c.x, player.y - c.y);
+          if (dist < 26) openTrivia(c);
+        }
+      });
+    }
+
+    function openTrivia(capsule) {
+      activeChest = capsule;
+      const data = quests[capsule.id];
+      
+      document.getElementById('dialog-title').innerText = data.month;
+      document.getElementById('dialog-question').innerText = data.question;
+      document.getElementById('feedback').innerText = '';
+
+      const container = document.getElementById('options-container');
+      container.innerHTML = '';
+
+      data.options.forEach((opt, index) => {
+        const btn = document.createElement('button');
+        btn.className = 'btn';
+        btn.innerText = opt;
+        btn.onclick = () => checkAnswer(index, data.correct);
+        container.appendChild(btn);
+      });
+
+      document.getElementById('dialog').style.display = 'block';
+    }
+
+    function checkAnswer(selected, correct) {
+      if (selected === correct) {
+        document.getElementById('dialog').style.display = 'none';
+        activeChest.unlocked = true;
+        keysCollected++;
+        draw();
+
+        confetti({
+          particleCount: 25,
+          spread: 50,
+          origin: { y: 0.65 },
+          colors: ['#38bdf8', '#fb7185', '#ffffff']
+        });
+
+        if (keysCollected === 4) {
+          setTimeout(triggerVictory, 600);
+        }
+      } else {
+        document.getElementById('feedback').innerText = 'Arre Badam/Gunnu nope! Try again 🫧';
+      }
+    }
+
+    function triggerVictory() {
+      document.getElementById('victory-card').style.display = 'block';
+      confetti({
+        particleCount: 120,
+        spread: 90,
+        origin: { y: 0.55 },
+        colors: ['#38bdf8', '#4ade80', '#fb7185', '#ffffff']
+      });
+    }
+
+    draw();
+  </script>
+</body>
+</html>
